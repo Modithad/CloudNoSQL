@@ -4,10 +4,10 @@ import oracle.kv.KVStore;
 import oracle.kv.KVStoreConfig;
 import oracle.kv.KVStoreFactory;
 
-public class OracleNoClient {
+public class OracleNoManager {
 	private KVStore store;
 
-	public OracleNoClient(String storeName, String hostName, String hostPort) {
+	public OracleNoManager(String storeName, String hostName, String hostPort) {
 		this.setStore(KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort)));
 	}
 
