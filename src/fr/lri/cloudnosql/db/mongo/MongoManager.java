@@ -1,6 +1,7 @@
 package fr.lri.cloudnosql.db.mongo;
 
 import java.util.List;
+import java.util.Map;
 
 import org.bson.Document;
 
@@ -46,6 +47,10 @@ public class MongoManager {
 	public void put(List<Document> documents) {
 		// mongoClient.
 		userCollection.insertMany(documents);
+	}
+
+	public void put(Map<String, Object> map) {
+		userCollection.insertOne(new Document(map));
 	}
 
 }

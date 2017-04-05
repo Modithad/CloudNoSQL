@@ -1,0 +1,99 @@
+package fr.lri.cloudnosql.ops.insert;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
+import org.bson.Document;
+
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+
+import fr.lri.cloudnosql.db.mongo.MongoManager;
+
+public class InsertHandler {
+	private Map<Long, String> mongoServers = new LinkedHashMap<>();
+	private Map<String, MongoManager> mongoManagers = new LinkedHashMap<>();
+
+	public InsertHandler() {
+		mongoServers.put(0L, "tipi80");
+		mongoServers.put(123593233L, "tipi81");
+		mongoServers.put(444928949L, "tipi89");
+		mongoServers.put(2364715460L, "tipi90");
+
+		for (Long key : mongoServers.keySet()) {
+			String server = mongoServers.get(key);
+			MongoManager manager = new MongoManager(server, "user");
+			mongoManagers.put(server, manager);
+		}
+	}
+
+	public String findServer(long l) {
+		System.out.println(l);
+		Long[] arr = mongoServers.keySet().toArray(new Long[0]);
+		for (int i = 0; i < arr.length; i++) {
+			if (l >= arr[i] && i == arr.length - 1) {
+				return (mongoServers.get(arr[i]));
+			} else if (l >= arr[i] && l < arr[i + 1]) {
+				return (mongoServers.get(arr[i]));
+			}
+		}
+		return null;
+	}
+
+	// public Map<Object, List<Document>> filter(List<Map> map, String field) {
+	// System.out.println(map.get(0).getClass());
+	//
+	// Map<Object, List<Document>> index = map.stream().map(x-> new Document(x))
+	// .collect(Collectors.groupingBy(l -> findServer((long) l.get(field))));
+	//
+	// System.out.println(index);
+	// return index;
+	// }
+
+	// public Map<Object, List<Map<String, Object>>> filter(List<Map> map,
+	// String field) {
+	// Map<Object, List<Map<String, Object>>> index = map.stream()
+	// .collect(Collectors.groupingBy(l -> findServer((long) l.get(field))));
+	// return index;
+	// }
+	public void insert(Map<String, Object> map) {
+		long id;
+		if (map.get("user_id").getClass().equals(Integer.class)) {
+			id = Long.valueOf((int) map.get("user_id"));
+		} else
+			id = (long) map.get("user_id");
+		String server = findServer(id);
+		mongoManagers.get(server).put(map);
+	}
+	//
+	// public void insert(List<Map> map) {
+	// // String server = findServer((long) map.get("user_id"));
+	// Map m = filter(map, "user_id");
+	//
+	// for (Object o : m.keySet()) {
+	// mongoManagers.get(o).put((List<Document>) m.get(o));
+	// }
+	// // mongoManagers.get(server).put(map);
+	// }
+
+	// Function<String, String> func = (x) -> {
+	// return null;
+	// };
+	//
+	// BiFunction<Map<String, Object>, String, String> server1 = (map, value) ->
+	// {
+	// return findServer((long) map.get(value));
+	// };
+
+}
