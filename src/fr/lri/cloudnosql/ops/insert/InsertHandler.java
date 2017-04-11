@@ -19,11 +19,14 @@ import org.bson.Document;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 
+import fr.lri.cloudnosql.db.OracleNoSQL.OracleNoManager;
 import fr.lri.cloudnosql.db.mongo.MongoManager;
 
 public class InsertHandler {
 	private Map<Long, String> mongoServers = new LinkedHashMap<>();
 	private Map<String, MongoManager> mongoManagers = new LinkedHashMap<>();
+
+	private Map<String, OracleNoManager> oracleManagers = new LinkedHashMap<>();
 
 	public InsertHandler() {
 		mongoServers.put(0L, "tipi80");
@@ -35,6 +38,8 @@ public class InsertHandler {
 			String server = mongoServers.get(key);
 			MongoManager manager = new MongoManager(server, "user");
 			mongoManagers.put(server, manager);
+			OracleNoManager mgr = new OracleNoManager("kvstore", server, "5000");
+			oracleManagers.put(server, mgr);
 		}
 	}
 
@@ -68,32 +73,63 @@ public class InsertHandler {
 	// return index;
 	// }
 	public void insert(Map<String, Object> map) {
+		long id = getId(map);
+		String server = findServer(id);
+		mongoManagers.get(server).put(map);
+	}
+
+	public void insertOracle(Map<String, Object> map) {
+		long id = getId(map);
+
+		String tweetId = String.valueOf(map.get("tweet_id"));
+		map.remove("user_id");
+
+		String server = findServer(id);
+		oracleManagers.get(server).put(String.valueOf(id), tweetId, map);
+		oracleManagers.get(server).put(String.valueOf(map.get("user_id")), id);
+
+	}
+
+	private long getId(Map<String, Object> map) {
 		long id;
 		if (map.get("user_id").getClass().equals(Integer.class)) {
 			id = Long.valueOf((int) map.get("user_id"));
 		} else
 			id = (long) map.get("user_id");
-		String server = findServer(id);
-		mongoManagers.get(server).put(map);
+		return id;
 	}
-	//
+
+	public Object getUser(Map m) {
+		long id = getId(m);
+		return mongoManagers.get(findServer(id)).get(m);
+
+		// return func;
+
+	}
+
+	public Object getUser2(Map m) {
+		long id = getId(m);
+		return oracleManagers.get(findServer(id)).getMulti(String.valueOf(id));
+
+		// return func;
+
+	}
 	// public void insert(List<Map> map) {
-	// // String server = findServer((long) map.get("user_id"));
-	// Map m = filter(map, "user_id");
+	// String server = findServer((long) map.get("user_id"));
+	// //Map m = filter(map, "user_id");
 	//
 	// for (Object o : m.keySet()) {
 	// mongoManagers.get(o).put((List<Document>) m.get(o));
 	// }
-	// // mongoManagers.get(server).put(map);
+	// mongoManagers.get(server).put(map);
 	// }
 
-	// Function<String, String> func = (x) -> {
-	// return null;
-	// };
-	//
-	// BiFunction<Map<String, Object>, String, String> server1 = (map, value) ->
-	// {
-	// return findServer((long) map.get(value));
-	// };
+	Function<String, String> func = (x) -> {
+		return null;
+	};
+
+	BiFunction<Map<String, Object>, String, String> server1 = (map, value) -> {
+		return findServer((long) map.get(value));
+	};
 
 }

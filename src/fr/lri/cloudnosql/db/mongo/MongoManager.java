@@ -53,4 +53,10 @@ public class MongoManager {
 		userCollection.insertOne(new Document(map));
 	}
 
+	public Object get(Map<String, Object> map) {
+
+		return userCollection.find(new Document(map)).first();
+
+	}
+
 }

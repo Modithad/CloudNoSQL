@@ -56,11 +56,11 @@ public class test {
 					// "</ctofservice>";
 	}
 
-	@Path("/test")
+	@Path("/test3")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String test(String m) {
+	public String test3(String m) {
 
 		InsertHandler h = new InsertHandler();
 		Type type = new TypeToken<Map<String, Object>>() {
@@ -71,7 +71,61 @@ public class test {
 		System.out.println(s);
 		Gson gson = new GsonBuilder().create();
 		Map json = Util.toMap(new JSONObject(m));
+		h.insertOracle(json);
+		return m;
+	}
+	
+	@Path("/test2")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String test2(String m) {
+
+		InsertHandler h = new InsertHandler();
+		Type type = new TypeToken<Map<String, Object>>( ) {
+		}.getType();
+		System.out.println("input is");
+		System.out.println(m);
+		String s = "{  \"noFollowers\" : 3284, \"noLists\" : 32, \"user_id\" : 274048336, \"name\" : \"SAN LQ_Singapore\", \"description\" : \"Created for my lovies. Be blessed to be a blessing to others\", \"location\" : \"Singapore\", \"noFriends\" :838, \"screenName\" : \"cordav0121\", \"noStatuses\" : 467608 }";
+		System.out.println(s);
+		Gson gson = new GsonBuilder().create();
+		Map json = Util.toMap(new JSONObject(m));
 		h.insert(json);
 		return m;
+	}
+	
+	
+	@Path("/get1")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String get1(String m) {
+
+		InsertHandler h = new InsertHandler();
+		Type type = new TypeToken<Map<String, Object>>( ) {
+		}.getType();
+		System.out.println("input is");
+		System.out.println(m);
+		Map json = Util.toMap(new JSONObject(m));
+		Object o=h.getUser(json);
+		Gson gson = new GsonBuilder().create();		
+		return gson.toJson(o);
+	}
+	
+	@Path("/get2")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String get2(String m) {
+
+		InsertHandler h = new InsertHandler();
+		Type type = new TypeToken<Map<String, Object>>( ) {
+		}.getType();
+		System.out.println("input is");
+		System.out.println(m);
+		Map json = Util.toMap(new JSONObject(m));
+		Object o=h.getUser2(json);
+		Gson gson = new GsonBuilder().create();		
+		return gson.toJson(o);
 	}
 }
