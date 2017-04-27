@@ -21,6 +21,7 @@ import com.google.common.collect.Multimaps;
 
 import fr.lri.cloudnosql.db.OracleNoSQL.OracleNoManager;
 import fr.lri.cloudnosql.db.mongo.MongoManager;
+import fr.lri.cloudnosql.util.Util;
 
 public class InsertHandler {
 	private Map<Long, String> mongoServers = new LinkedHashMap<>();
@@ -28,7 +29,17 @@ public class InsertHandler {
 
 	private Map<String, OracleNoManager> oracleManagers = new LinkedHashMap<>();
 
-	public InsertHandler() {
+	private static InsertHandler instance = null;
+
+	public static InsertHandler getInstance() {
+		if (instance == null) {
+			System.out.println("creating new");
+			instance = new InsertHandler();
+		}
+		return instance;
+	}
+
+	protected InsertHandler() {
 		mongoServers.put(0L, "tipi80");
 		mongoServers.put(123593233L, "tipi81");
 		mongoServers.put(444928949L, "tipi89");
@@ -109,10 +120,31 @@ public class InsertHandler {
 
 	public Object getUser2(Map m) {
 		long id = getId(m);
-		return oracleManagers.get(findServer(id)).getMulti(String.valueOf(id));
+		// Util.joinMap((Map<String, Object>)
+		// mongoManagers.get(findServer(id)).get(m),
+		// oracleManagers.get(findServer(id)).getMulti(String.valueOf(id)),
+		// "tweets");
+
+		return Util.joinMap((Map<String, Object>) mongoManagers.get(findServer(id)).get(m),
+				oracleManagers.get(findServer(id)).getMulti(String.valueOf(id)), "tweets");
+		// oracleManagers.get(findServer(id)).getMulti(String.valueOf(id));
 
 		// return func;
 
+	}
+
+	public Object getFriends(Map m) {
+		long id = getId(m);
+		Document s = (Document) getUser(m);
+		List<Object> l = (List<Object>) s.get("followers");
+		Map<Object, List<Long>> map = Util.SplitToServers(l, func);
+		List<Object> list = new ArrayList<>();
+
+		for (Object object : map.keySet()) {
+			list.addAll(mongoManagers.get(object).getIn("user_id", map.get(object)));
+		}
+
+		return list;
 	}
 	// public void insert(List<Map> map) {
 	// String server = findServer((long) map.get("user_id"));
@@ -124,7 +156,15 @@ public class InsertHandler {
 	// mongoManagers.get(server).put(map);
 	// }
 
-	Function<String, String> func = (x) -> {
+	Function<Long, String> func = (l) -> {
+		Long[] arr = mongoServers.keySet().toArray(new Long[0]);
+		for (int i = 0; i < arr.length; i++) {
+			if (l >= arr[i] && i == arr.length - 1) {
+				return (mongoServers.get(arr[i]));
+			} else if (l >= arr[i] && l < arr[i + 1]) {
+				return (mongoServers.get(arr[i]));
+			}
+		}
 		return null;
 	};
 

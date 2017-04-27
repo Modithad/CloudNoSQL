@@ -4,12 +4,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
+import com.google.common.collect.Lists;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-public class MongoManager {
+import fr.lri.cloudnosql.db.meta.DBType;
+import fr.lri.cloudnosql.db.meta.IDBManager;
+
+public class MongoManager implements IDBManager {
 	private MongoClient mongoClient;
 	private MongoDatabase mongoDatabase;
 	private MongoCollection<Document> userCollection;
@@ -57,6 +64,17 @@ public class MongoManager {
 
 		return userCollection.find(new Document(map)).first();
 
+	}
+
+	public List<Object> getIn(String field, List<?> list) {
+		DBObject obj = new BasicDBObject(field, new BasicDBObject("$in", list));
+		return Lists.newArrayList(userCollection.find((Bson) obj));
+	}
+
+	@Override
+	public DBType getDBType() {
+		// TODO Auto-generated method stub
+		return DBType.MONGO_DB;
 	}
 
 }

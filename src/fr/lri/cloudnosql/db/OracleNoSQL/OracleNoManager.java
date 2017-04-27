@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fr.lri.cloudnosql.db.meta.DBType;
+import fr.lri.cloudnosql.db.meta.IDBManager;
 import oracle.kv.FaultException;
 import oracle.kv.KVStore;
 import oracle.kv.KVStoreConfig;
@@ -18,7 +20,7 @@ import oracle.kv.Value;
 import oracle.kv.ValueVersion;
 import oracle.kv.impl.util.SerializationUtil;
 
-public class OracleNoManager {
+public class OracleNoManager implements IDBManager {
 	private KVStore store;
 
 	public OracleNoManager(String storeName, String hostName, String hostPort) {
@@ -82,5 +84,11 @@ public class OracleNoManager {
 
 		return list;
 
+	}
+
+	@Override
+	public DBType getDBType() {
+		// TODO Auto-generated method stub
+		return DBType.ORACLE_NOSQL;
 	}
 }
