@@ -143,18 +143,20 @@ public class test {
 		Gson gson = new GsonBuilder().create();
 		return gson.toJson(o);
 	}
-	
-	
+
 	@Path("/getTest")
 	@POST
+	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void getTest(String m) {
+	public String getTest(String m) {
 
 		System.out.println("input is");
 		System.out.println(m);
-//		Map json = Util.toMap(new JSONObject(m));
-//		Object o = h.getFriends(json);
-//		Gson gson = new GsonBuilder().create();
-		qb.analyzeQuery(m);
+		// Map json = Util.toMap(new JSONObject(m));
+		// Object o = h.getFriends(json);
+		// Gson gson = new GsonBuilder().create();
+		Object o = qb.analyzeQuery(m);
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(o);
 	}
 }

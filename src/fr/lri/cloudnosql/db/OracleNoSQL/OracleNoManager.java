@@ -22,8 +22,10 @@ import oracle.kv.impl.util.SerializationUtil;
 
 public class OracleNoManager implements IDBManager {
 	private KVStore store;
+	public String hname;
 
 	public OracleNoManager(String storeName, String hostName, String hostPort) {
+		hname = hostName;
 		this.setStore(KVStoreFactory.getStore(new KVStoreConfig(storeName, hostName + ":" + hostPort)));
 	}
 
@@ -55,6 +57,8 @@ public class OracleNoManager implements IDBManager {
 	}
 
 	public void put(String key, Object val) {
+		System.out.println("inside oracle");
+		System.out.println(key);
 		Key k = Key.createKey(key);
 		Value v = Value.createValue(SerializationUtil.getBytes(val));
 		store.put(k, v);
@@ -68,10 +72,29 @@ public class OracleNoManager implements IDBManager {
 
 	public Object get(String key) {
 
-		System.out.println(store.get(Key.createKey("user_id", key)));
-		return SerializationUtil.getObject((store.get(Key.createKey(key)).getValue().getValue()), Object.class);
+		// System.out.println(store.get(Key.createKey("user_id", key)));
+		Object o = store.get(Key.createKey(key));
+		if (o == null)
+			return null;
+		else
+			return SerializationUtil.getObject((store.get(Key.createKey(key)).getValue().getValue()), Object.class);
 
 	}
+
+	public Object get(String majorKey, String minorKey) {
+		return SerializationUtil.getObject((store.get(Key.createKey(majorKey, minorKey)).getValue().getValue()),
+				Object.class);
+	}
+
+	// public Object get(String key, String value) {
+	//
+	// Object o= store.get(Key.createKey(key, value));
+	// System.out.println(store.get(Key.createKey(key, value)));
+	// return
+	// SerializationUtil.getObject((store.get(Key.createKey(key)).getValue().getValue()),
+	// Object.class);
+	//
+	// }
 
 	public Object getMulti(String key) {
 

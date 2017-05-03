@@ -29,19 +29,20 @@ public class QueryBroker {
 		primKeys.add("tweet_id");
 	}
 
-	public void analyzeQuery(String query) {
+	public Object analyzeQuery(String query) {
 		Map<String, Object> m = Util.toMap(new JSONObject(query));
 
 		if (m.containsKey("select")) {
-			analyzeSelect(m);
+			return analyzeSelect(m);
 		}
+		return null;
 	}
 
 	public void analyzeInsert(Map<String, Object> map) {
 
 	}
 
-	public void analyzeSelect(Map<String, Object> map) {
+	public Object analyzeSelect(Map<String, Object> map) {
 		ArrayList<String> entities = (ArrayList<String>) map.get("from");
 		HashMap<String, Object> conditions = (HashMap<String, Object>) map.get("where");
 
@@ -49,7 +50,7 @@ public class QueryBroker {
 
 		for (Entry<String, Object> ent : conditions.entrySet()) {
 			String attribName = ent.getKey();
-			String entityName = distHandler.getEntityofValue(attribName);
+			String entityName = DistributionHandler.getEntityofValue(attribName);
 			HashMap<String, Object> innerMap;
 			if (entityConditions.containsKey(entityName)) {
 				innerMap = entityConditions.get(ent);
@@ -67,7 +68,7 @@ public class QueryBroker {
 			}
 		}
 
-		distHandler.simpleRequest(entityConditions);
+		return distHandler.complexRequest2(entityConditions);
 	}
 
 	public void createMongoCondition(HashMap<String, Object> map) {

@@ -1,6 +1,8 @@
 package fr.lri.cloudnosql.db.meta;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class DBMeta {
@@ -8,14 +10,15 @@ public class DBMeta {
 	private DBType DBType;
 	private String DBName;
 	private String Collection;
-	private Set<String> distKeys;
-	private Set<String> primKeys;
-	private Set<String> reverseKeys;
+	private LinkedList<String> distKeys;
+	private LinkedList<String> primKeys;
+	private LinkedList<String> reverseKeys;
+	private int level;
 
 	public DBMeta() {
-		distKeys = new HashSet<>();
-		primKeys = new HashSet<>();
-		reverseKeys = new HashSet<>();
+		distKeys = new LinkedList<>();
+		primKeys = new LinkedList<>();
+		reverseKeys = new LinkedList<>();
 	}
 
 	public void addDistKey(String k) {
@@ -30,27 +33,27 @@ public class DBMeta {
 		reverseKeys.add(k);
 	}
 
-	public Set<String> getReverseKeys() {
+	public LinkedList<String> getReverseKeys() {
 		return reverseKeys;
 	}
 
-	public void setReverseKeys(Set<String> reverseKeys) {
+	public void setReverseKeys(LinkedList<String> reverseKeys) {
 		this.reverseKeys = reverseKeys;
 	}
 
-	public Set<String> getDistKeys() {
+	public LinkedList<String> getDistKeys() {
 		return distKeys;
 	}
 
-	public void setDistKeys(Set<String> distKeys) {
+	public void setDistKeys(LinkedList<String> distKeys) {
 		this.distKeys = distKeys;
 	}
 
-	public Set<String> getPrimKeys() {
+	public LinkedList<String> getPrimKeys() {
 		return primKeys;
 	}
 
-	public void setPrimKeys(Set<String> primKeys) {
+	public void setPrimKeys(LinkedList<String> primKeys) {
 		this.primKeys = primKeys;
 	}
 
@@ -84,6 +87,14 @@ public class DBMeta {
 
 	public void setCollection(String collection) {
 		Collection = collection;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
 	}
 
 }

@@ -93,12 +93,13 @@ public class InsertHandler {
 		long id = getId(map);
 
 		String tweetId = String.valueOf(map.get("tweet_id"));
+		System.out.println(tweetId);
+		String server = findServer(id);
+		oracleManagers.get(server).put(tweetId, id);
+
 		map.remove("user_id");
 
-		String server = findServer(id);
-		oracleManagers.get(server).put(String.valueOf(id), tweetId, map);
-		oracleManagers.get(server).put(String.valueOf(map.get("user_id")), id);
-
+		 oracleManagers.get(server).put(String.valueOf(id), tweetId, map);
 	}
 
 	private long getId(Map<String, Object> map) {
