@@ -30,9 +30,10 @@ public class MongoManager implements IDBManager {
 	}
 
 	public MongoManager(String host, String database) {
+		System.out.println(database);
 		setMongoClient(new MongoClient(host));
-		mongoDatabase = mongoClient.getDatabase(database);
-		userCollection = mongoDatabase.getCollection("testusers");
+		mongoDatabase = mongoClient.getDatabase("user_index");
+		userCollection = mongoDatabase.getCollection("user");
 	}
 
 	public MongoDatabase getMongoDatabase() {

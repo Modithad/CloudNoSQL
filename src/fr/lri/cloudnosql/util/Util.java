@@ -103,8 +103,10 @@ public class Util {
 		Long[] arr = servers.keySet().toArray(new Long[0]);
 		for (int i = 0; i < arr.length; i++) {
 			if (l >= arr[i] && i == arr.length - 1) {
+				System.out.println("one");
 				return (servers.get(arr[i]));
 			} else if (l >= arr[i] && l < arr[i + 1]) {
+				System.out.println("two");
 				return (servers.get(arr[i]));
 			}
 		}

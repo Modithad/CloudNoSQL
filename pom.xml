@@ -67,16 +67,9 @@
 			<artifactId>oracle-nosql-client</artifactId>
 			<version>4.0.9</version>
 		</dependency>
-	<!--  	<dependency>
-			<groupId>org.neo4j.driver</groupId>
-			<artifactId>neo4j-java-driver</artifactId>
-			<version>1.0.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.neo4j</groupId>
-			<artifactId>neo4j-ogm</artifactId>
-			<version>1.1.0</version>
-		</dependency>-->
+		<!-- <dependency> <groupId>org.neo4j.driver</groupId> <artifactId>neo4j-java-driver</artifactId> 
+			<version>1.0.5</version> </dependency> <dependency> <groupId>org.neo4j</groupId> 
+			<artifactId>neo4j-ogm</artifactId> <version>1.1.0</version> </dependency> -->
 		<dependency>
 			<groupId>org.apache.zookeeper</groupId>
 			<artifactId>zookeeper</artifactId>
@@ -87,8 +80,12 @@
 			<artifactId>guava</artifactId>
 			<version>19.0</version>
 		</dependency>
-		
-		
-		
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.6</version>
+		</dependency>
+
+
 	</dependencies>
 </project>

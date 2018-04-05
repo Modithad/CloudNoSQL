@@ -56,6 +56,12 @@ public class OracleNoManager implements IDBManager {
 		}
 	}
 
+	public void put(String majorKey, String minorKey, Object value) {
+		Key k = Key.createKey(majorKey, minorKey);
+		Value v = Value.createValue(SerializationUtil.getBytes(value));
+		store.put(k, v);
+	}
+
 	public void put(String key, Object val) {
 		System.out.println("inside oracle");
 		System.out.println(key);
@@ -82,8 +88,11 @@ public class OracleNoManager implements IDBManager {
 	}
 
 	public Object get(String majorKey, String minorKey) {
-		return SerializationUtil.getObject((store.get(Key.createKey(majorKey, minorKey)).getValue().getValue()),
-				Object.class);
+		if (store.get(Key.createKey(majorKey, minorKey)) == null) {
+			return null;
+		} else
+			return SerializationUtil.getObject((store.get(Key.createKey(majorKey, minorKey)).getValue().getValue()),
+					Object.class);
 	}
 
 	// public Object get(String key, String value) {
@@ -101,7 +110,7 @@ public class OracleNoManager implements IDBManager {
 		final Map<Key, ValueVersion> valueVersion = store.multiGet(Key.createKey(key), null, null);
 		List<Object> list = new ArrayList<>();
 		for (Entry<Key, ValueVersion> elm : valueVersion.entrySet()) {
-			System.out.print(elm.getKey() + "-->");
+			// System.out.print(elm.getKey() + "-->");
 			list.add(SerializationUtil.getObject(elm.getValue().getValue().getValue(), Object.class));
 		}
 

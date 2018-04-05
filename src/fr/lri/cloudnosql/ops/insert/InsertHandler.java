@@ -2,6 +2,8 @@ package fr.lri.cloudnosql.ops.insert;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +22,10 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 
 import fr.lri.cloudnosql.db.OracleNoSQL.OracleNoManager;
+import fr.lri.cloudnosql.db.meta.IDBManager;
 import fr.lri.cloudnosql.db.mongo.MongoManager;
 import fr.lri.cloudnosql.util.Util;
+import oracle.kv.Key;
 
 public class InsertHandler {
 	private Map<Long, String> mongoServers = new LinkedHashMap<>();
@@ -99,7 +103,70 @@ public class InsertHandler {
 
 		map.remove("user_id");
 
-		 oracleManagers.get(server).put(String.valueOf(id), tweetId, map);
+		oracleManagers.get(server).put(String.valueOf(id), tweetId, map);
+	}
+
+	public void insertHashtag(Map<String, Object> map) {
+		// long id = getId(map);
+
+		String tweetId = String.valueOf(map.get("tweet_id"));
+
+		System.out.println(tweetId);
+		for (OracleNoManager manager : oracleManagers.values()) {
+			// get the reverse index key value to get the root and the
+			// server
+			Object o = manager.get(tweetId);
+			if (o != null) {
+
+				// Long userId=(Long) o;
+
+				if (map.get("hashtags") != null) {
+					HashMap tweet = (HashMap) manager.get(String.valueOf(o), tweetId);
+					// System.out.println(tweet);
+					tweet.put("hashtags", map.get("hashtags"));
+					// System.out.println(tweet);
+					manager.put(String.valueOf(o), tweetId, tweet);
+					ArrayList l = (ArrayList) map.get("hashtags");
+
+					for (Object object : l) {
+						System.out.println(object);
+						Set tweets = new HashSet();
+						Object obj = manager.get("hashtag", String.valueOf(object));
+						if (obj != null) {
+							tweets = (Set) obj;
+						}
+
+						tweets.add(tweetId);
+						manager.put("hashtag", String.valueOf(object), tweets);
+						// System.out.println("Inserted "+manager.get("hashtag",
+						// String.valueOf(object)));
+					}
+
+				}
+				// System.out.println("not null in " + ((OracleNoManager)
+				// manager).hname);
+				// when the server is found execute the key combination to
+				// retrieve the data
+				// Key k= Key.createKey(Arrays.asList("Larry", "Moe", "Curly"));
+				// manager.put(key, val);
+			}
+		}
+
+		// String server = findServer(id);
+		// oracleManagers.get(server).put(tweetId, id);
+		//
+		// map.remove("user_id");
+		//
+		// oracleManagers.get(server).put(String.valueOf(id), tweetId, map);
+	}
+
+	public void getHashtagUser(Map<String, Object> map) {
+		for (OracleNoManager manager : oracleManagers.values()) {
+			Object o = manager.get("hashtag", "one");
+			if (o != null) {
+				System.out.println(o.getClass());
+			}
+		}
 	}
 
 	private long getId(Map<String, Object> map) {

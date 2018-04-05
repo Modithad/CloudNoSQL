@@ -83,13 +83,37 @@ public class test {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public String test2(String m) {
 
-		// InsertHandler h = new InsertHandler();
-		Type type = new TypeToken<Map<String, Object>>() {
-		}.getType();
-		System.out.println(m);
-		Gson gson = new GsonBuilder().create();
+		// System.out.println(m);
+		// Gson gson = new GsonBuilder().create();
 		Map json = Util.toMap(new JSONObject(m));
 		h.insert(json);
+		return m;
+	}
+	
+	
+	@Path("/insertHashtag")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String insertHashtag(String m) {
+
+		// System.out.println(m);
+		// Gson gson = new GsonBuilder().create();
+		Map json = Util.toMap(new JSONObject(m));
+		h.insertHashtag(json);
+		return m;
+	}
+	
+	@Path("/getHashtagUser")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String getHashtagUser(String m) {
+
+		// System.out.println(m);
+		// Gson gson = new GsonBuilder().create();
+		Map json = Util.toMap(new JSONObject(m));
+		h.getHashtagUser(json);
 		return m;
 	}
 
@@ -150,8 +174,8 @@ public class test {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public String getTest(String m) {
 
-		System.out.println("input is");
-		System.out.println(m);
+//		System.out.println("input is");
+//		System.out.println(m);
 		// Map json = Util.toMap(new JSONObject(m));
 		// Object o = h.getFriends(json);
 		// Gson gson = new GsonBuilder().create();
